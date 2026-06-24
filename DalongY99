@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-id="th-modified">我們的集點小日子</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+  body { font-family: 'Noto Sans TC', sans-serif; background: linear-gradient(180deg,#fff5ea 0%,#fdebe0 40%,#fde3da 100%); }
+  .font-display { font-family: 'Noto Serif TC', serif; }
+  .icon { display:inline-block; vertical-align:middle; }
+  textarea, input { font-family: 'Noto Sans TC', sans-serif; }
+  .fade-in { animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+</style>
+<meta property="og:title" content="我們的集點小日子" data-id="th-modified" ><meta name="description" content="index.html" data-id="th-modified" ><meta property="og:description" content="index.html" data-id="th-modified" ><meta property="og:image" content="https://tiiny.host/assets/logo-purple-bg.png" data-id="th-modified" ><meta property="og:image:width" content="1501" data-id="th-modified" ><meta property="og:image:height" content="1501" data-id="th-modified" ><meta property="og:image:type" content="image/png" data-id="th-modified" ><meta property="og:url" content="https://copper-natalya-15.tiiny.site/" data-id="th-modified" ><meta property="og:type" content="website" data-id="th-modified" ><script defer data-domain="copper-natalya-15.tiiny.site" src="https://analytics.tiiny.site/js/plausible.js"></script><script type="text/javascript" src="https://tiiny.host/ad-script.js"></script></head>
+<body>
+
+<div class="font-body max-w-5xl mx-auto px-4 pb-20">
+
+  <!-- Header -->
+  <header class="pt-10 pb-8 text-center">
+    <div class="inline-flex items-center gap-2 text-[#c2705a] mb-2">
+      ♥ <span class="text-sm font-semibold tracking-wide">COUPLE POINTS</span> ♥
+    </div>
+    <h1 class="font-display text-4xl md:text-5xl font-black text-[#7a3b2e]">我們的集點小日子</h1>
+    <p class="text-[#a9836f] mt-2 text-sm">蓋一個章，靠近彼此一點</p>
+  </header>
+
+  <div id="redeemedMsg" class="mb-6 text-center hidden">
+    <span class="inline-block bg-[#f6c4a8] text-[#7a3b2e] font-bold px-5 py-2 rounded-full shadow-sm" id="redeemedText"></span>
+  </div>
+
+  <!-- 1. Wishlist -->
+  <section class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">🎁</div>
+      <div>
+        <h2 class="font-display text-xl font-bold text-[#7a3b2e]">願望清單兌獎區</h2>
+        <p class="text-xs text-[#a9836f]">集滿大點，換一個微笑</p>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row gap-5">
+      <div id="wishBoy" class="flex-1 min-w-[260px] bg-white/80 rounded-3xl p-5 shadow-sm border border-[#f0d9c8]"></div>
+      <div id="wishGirl" class="flex-1 min-w-[260px] bg-white/80 rounded-3xl p-5 shadow-sm border border-[#f0d9c8]"></div>
+    </div>
+  </section>
+
+  <!-- 2. Points -->
+  <section class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">📍</div>
+      <div>
+        <h2 class="font-display text-xl font-bold text-[#7a3b2e]">集點區</h2>
+        <p class="text-xs text-[#a9836f]">男生幫女生蓋章，女生幫男生蓋章</p>
+      </div>
+    </div>
+    <div class="bg-white/80 rounded-3xl p-6 shadow-sm border border-[#f0d9c8]">
+      <div class="flex flex-col md:flex-row gap-5 mb-6">
+        <div id="stampGirl" class="flex-1 rounded-2xl p-5" style="background:#faecf0"></div>
+        <div id="stampBoy" class="flex-1 rounded-2xl p-5" style="background:#eef4f8"></div>
+      </div>
+      <div class="bg-[#fdf6ee] rounded-2xl p-4 border border-dashed border-[#e3c7a8]">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-sm font-bold text-[#a9836f]">📜 集點規則</p>
+          <button id="rulesEditBtn" class="text-xs text-[#c2705a] font-semibold underline">編輯</button>
+        </div>
+        <p id="rulesView" class="text-sm text-[#7a5a48] whitespace-pre-line leading-relaxed"></p>
+        <textarea id="rulesEdit" class="w-full text-sm text-[#7a5a48] bg-white/70 rounded-xl p-3 outline-none border border-[#e3c7a8] hidden" rows="5"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Praise -->
+  <section class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">✨</div>
+      <div>
+        <h2 class="font-display text-xl font-bold text-[#7a3b2e]">互相讚美區</h2>
+        <p class="text-xs text-[#a9836f]">說出今天對方的好，雙方都能看到</p>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row gap-5">
+      <div id="praiseGirl" class="flex-1 min-w-[260px] rounded-3xl p-5 shadow-sm border border-[#f0d9c8]" style="background:#faecf0"></div>
+      <div id="praiseBoy" class="flex-1 min-w-[260px] rounded-3xl p-5 shadow-sm border border-[#f0d9c8]" style="background:#eef4f8"></div>
+    </div>
+  </section>
+
+  <!-- 4. MVP -->
+  <section class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">🏆</div>
+      <div>
+        <h2 class="font-display text-xl font-bold text-[#7a3b2e]">當月 MVP</h2>
+        <p class="text-xs text-[#a9836f]" id="mvpSubtitle"></p>
+      </div>
+    </div>
+    <div class="bg-gradient-to-br from-[#fff1d6] to-[#ffe2c4] rounded-3xl p-6 shadow-sm border border-[#f0d9c8] flex items-center justify-center gap-8 flex-wrap" id="mvpCards"></div>
+    <p class="text-center text-sm text-[#a9836f] mt-3" id="mvpResult"></p>
+  </section>
+
+  <!-- 5. Photos -->
+  <section class="mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">📷</div>
+      <div>
+        <h2 class="font-display text-xl font-bold text-[#7a3b2e]">相片回顧</h2>
+        <p class="text-xs text-[#a9836f]">留下我們的瞬間</p>
+      </div>
+    </div>
+    <div class="bg-white/80 rounded-3xl p-6 shadow-sm border border-[#f0d9c8]">
+      <label class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-xl bg-[#c2705a] text-white text-sm font-bold cursor-pointer active:scale-95 transition">
+        ➕ 上傳照片
+        <input type="file" id="photoInputTop" accept="image/*" multiple class="hidden">
+      </label>
+      <div id="photoGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3"></div>
+      <p id="photoEmpty" class="text-sm text-[#c2a896] text-center py-6">還沒有照片，上傳第一張回憶吧 📷</p>
+    </div>
+  </section>
+
+  <footer class="text-center text-xs text-[#c2a896] pt-4">made with 💛 for us</footer>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 hidden">
+  <button id="lbPrev" class="absolute left-3 md:left-8 text-white/80 hover:text-white text-3xl">‹</button>
+  <img id="lbImg" src="" alt="" class="max-h-[85vh] max-w-[85vw] rounded-xl shadow-2xl">
+  <button id="lbNext" class="absolute right-3 md:right-8 text-white/80 hover:text-white text-3xl">›</button>
+  <button id="lbClose" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">✕</button>
+</div>
+
+<script>
+/* ---------- 資料儲存（localStorage） ---------- */
+function load(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) { return fallback; }
+}
+function save(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+}
+
+const DEFAULT_RULES = "每完成一件小事 +1 小點（例如：洗碗、說早安、準時赴約）\n每次驚喜或特別用心的事 +3 小點\n10 小點 = 1 大點，大點可用來兌換願望清單裡的禮物\n雙方都可以蓋章加點，誠實互信最重要 💛";
+
+const DEFAULT_BOY_WISHES = [
+  { id: "b1", name: "頭皮檢查保養", cost: 100 },
+  { id: "b2", name: "球鞋", cost: 3 },
+  { id: "b3", name: "看球賽門票", cost: 2 },
+];
+const DEFAULT_GIRL_WISHES = [
+  { id: "g1", name: "頭皮檢查保養", cost: 100 },
+  { id: "g2", name: "美容券", cost: 3 },
+  { id: "g3", name: "浪漫晚餐", cost: 2 },
+];
+
+let state = {
+  smallPoints: load("points:small", { boy: 0, girl: 0 }),
+  rules: load("points:rules", DEFAULT_RULES),
+  praises: load("praises:list", []),
+  photos: load("photos:list", []),
+};
+
+let lightboxIdx = null;
+let editingRules = false;
+
+/* ---------- 工具 ---------- */
+function bigPoints(small) { return Math.floor((small || 0) / 10); }
+
+function showRedeemMsg(text) {
+  const el = document.getElementById("redeemedMsg");
+  const t = document.getElementById("redeemedText");
+  t.textContent = text;
+  el.classList.remove("hidden");
+  setTimeout(() => el.classList.add("hidden"), 3000);
+}
+
+/* ---------- 願望清單 ---------- */
+function renderWish(containerId, title, accent, wishes, points, who) {
+  const el = document.getElementById(containerId);
+  let html = `
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span style="color:${accent}">♡</span>
+        <h3 class="font-bold text-lg" style="color:${accent}">${title}</h3>
+      </div>
+      <div class="text-right">
+        <div class="text-2xl font-extrabold" style="color:${accent}">${points}</div>
+        <div class="text-[11px] text-[#9c8275] -mt-1">大點</div>
+      </div>
+    </div>
+    <div class="space-y-3">`;
+  wishes.forEach(w => {
+    const reachable = points >= w.cost;
+    html += `
+      <div class="flex items-center justify-between rounded-2xl px-4 py-3 bg-[#fdf6ee] border border-[#f0e2d2]">
+        <div>
+          <p class="font-semibold text-[#5a4034]">${w.name}</p>
+          <p class="text-xs text-[#a98f7f]">需要 ${w.cost} 大點</p>
+        </div>
+        ${reachable
+          ? `<button class="px-3 py-1.5 rounded-full text-sm font-bold text-white shadow-sm active:scale-95 transition" style="background:${accent}" onclick="handleRedeem('${who}','${w.id}')">兌獎 🎁</button>`
+          : `<span class="text-xs text-[#c2a896] font-medium">${w.cost - points} 點後解鎖</span>`}
+      </div>`;
+  });
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+function handleRedeem(who, wishId) {
+  const wishes = who === "boy" ? DEFAULT_BOY_WISHES : DEFAULT_GIRL_WISHES;
+  const wish = wishes.find(w => w.id === wishId);
+  if (!wish) return;
+  const pts = bigPoints(state.smallPoints[who]);
+  if (pts < wish.cost) return;
+  state.smallPoints[who] = Math.max(0, (state.smallPoints[who] || 0) - wish.cost * 10);
+  save("points:small", state.smallPoints);
+  showRedeemMsg(`🎉 ${who === "boy" ? "男生" : "女生"} 兌換了「${wish.name}」！`);
+  renderAll();
+}
+
+/* ---------- 集點卡 ---------- */
+function renderStamp(containerId, ownerLabel, operatorLabel, color, who) {
+  const el = document.getElementById(containerId);
+  const small = state.smallPoints[who] || 0;
+  const filled = small % 10 === 0 && small > 0 ? 10 : small % 10;
+  const completedCards = Math.floor(small / 10);
+  let slotsHtml = "";
+  for (let i = 0; i < 10; i++) {
+    const isFilled = i < filled;
+    slotsHtml += `
+      <div class="aspect-square rounded-lg border-2 flex items-center justify-center transition"
+           style="border-color:${color}; background:${isFilled ? color : "rgba(255,255,255,0.6)"}">
+        ${isFilled ? `<span style="color:white;font-size:14px;">✓</span>` : ""}
+      </div>`;
+  }
+  el.innerHTML = `
+    <div class="flex items-center justify-between mb-1">
+      <p class="font-bold" style="color:${color}">${ownerLabel} 的集點卡</p>
+      <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/70" style="color:${color}">由${operatorLabel}蓋章</span>
+    </div>
+    <p class="text-xs mb-3" style="color:${color};opacity:0.75">已集滿 ${completedCards} 張大點卡・本卡 ${filled}/10</p>
+    <div class="grid grid-cols-5 gap-2 mb-4">${slotsHtml}</div>
+    <div class="flex items-center justify-center gap-3">
+      <button onclick="addSmall('${who}',-1)" class="w-9 h-9 rounded-full bg-white/70 border-2 flex items-center justify-center active:scale-90 transition" style="border-color:${color};color:${color}">−</button>
+      <button onclick="addSmall('${who}',1)" class="px-5 py-2.5 rounded-full font-bold text-white text-sm flex items-center gap-1.5 active:scale-95 transition shadow-sm" style="background:${color}">蓋一個章</button>
+    </div>`;
+}
+
+function addSmall(who, delta) {
+  state.smallPoints[who] = Math.max(0, (state.smallPoints[who] || 0) + delta);
+  save("points:small", state.smallPoints);
+  renderAll();
+}
+
+/* ---------- 規則 ---------- */
+function renderRules() {
+  const view = document.getElementById("rulesView");
+  const edit = document.getElementById("rulesEdit");
+  const btn = document.getElementById("rulesEditBtn");
+  if (editingRules) {
+    view.classList.add("hidden");
+    edit.classList.remove("hidden");
+    edit.value = state.rules;
+    btn.textContent = "完成";
+  } else {
+    view.classList.remove("hidden");
+    edit.classList.add("hidden");
+    view.textContent = state.rules;
+    btn.textContent = "編輯";
+  }
+}
+document.getElementById("rulesEditBtn").addEventListener("click", () => {
+  if (editingRules) {
+    state.rules = document.getElementById("rulesEdit").value;
+    save("points:rules", state.rules);
+  }
+  editingRules = !editingRules;
+  renderRules();
+});
+
+/* ---------- 讚美 ---------- */
+function renderPraise(containerId, title, accent, placeholder, from) {
+  const el = document.getElementById(containerId);
+  const items = (state.praises || []).filter(p => p.from === from);
+  let itemsHtml = items.length === 0
+    ? `<p class="text-sm text-[#c2a896] text-center py-4">還沒有留言，說一句好話吧 💌</p>`
+    : items.map(p => `
+      <div class="relative rounded-2xl p-3 bg-white/80 border" style="border-color:${accent}33">
+        <button onclick="deletePraise('${p.id}')" class="absolute top-2 right-2 text-[#c2a896] hover:text-[#c2705a]">🗑</button>
+        <p class="text-sm text-[#5a4034] pr-5">${escapeHtml(p.text)}</p>
+        <p class="text-[10px] text-[#c2a896] mt-1.5">${new Date(p.date).toLocaleDateString()}</p>
+      </div>`).join("");
+
+  el.innerHTML = `
+    <h3 class="font-bold mb-3" style="color:${accent}">${title}</h3>
+    <div class="flex gap-2 mb-4">
+      <input id="input-${from}" placeholder="${placeholder}" class="flex-1 rounded-xl border px-3 py-2 text-sm outline-none bg-white/80" style="border-color:${accent}">
+      <button onclick="addPraise('${from}')" class="px-4 py-2 rounded-xl text-white font-bold text-sm active:scale-95 transition" style="background:${accent}">送出</button>
+    </div>
+    <div class="space-y-2 max-h-80 overflow-y-auto">${itemsHtml}</div>`;
+
+  document.getElementById(`input-${from}`).addEventListener("keydown", (e) => {
+    if (e.key === "Enter") addPraise(from);
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function addPraise(from) {
+  const input = document.getElementById(`input-${from}`);
+  const text = input.value.trim();
+  if (!text) return;
+  const entry = { id: Date.now().toString(), from, text, date: new Date().toISOString() };
+  state.praises = [entry, ...(state.praises || [])];
+  save("praises:list", state.praises);
+  renderAll();
+}
+
+function deletePraise(id) {
+  state.praises = (state.praises || []).filter(p => p.id !== id);
+  save("praises:list", state.praises);
+  renderAll();
+}
+
+/* ---------- MVP ---------- */
+function renderMvp() {
+  const now = new Date();
+  const thisMonth = (state.praises || []).filter(p => {
+    const d = new Date(p.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const boyReceived = thisMonth.filter(p => p.from === "girl").length;
+  const girlReceived = thisMonth.filter(p => p.from === "boy").length;
+  let mvp = null;
+  if (boyReceived > girlReceived) mvp = "boy";
+  else if (girlReceived > boyReceived) mvp = "girl";
+
+  document.getElementById("mvpSubtitle").textContent = `${now.getMonth() + 1} 月份被稱讚最多的人`;
+  document.getElementById("mvpCards").innerHTML = `
+    ${mvpCardHtml("男生", boyReceived, mvp === "boy", "#4a7a9c")}
+    <span style="font-size:32px;color:#d99a3d;">👑</span>
+    ${mvpCardHtml("女生", girlReceived, mvp === "girl", "#c2607a")}`;
+  document.getElementById("mvpResult").textContent = mvp
+    ? `👑 本月 MVP 是「${mvp === "boy" ? "男生" : "女生"}」，收到了 ${Math.max(boyReceived, girlReceived)} 次稱讚！`
+    : "";
+}
+function mvpCardHtml(label, count, active, accent) {
+  return `
+    <div class="flex flex-col items-center gap-1 px-6 py-4 rounded-2xl transition ${active ? "bg-white shadow-md scale-105" : "opacity-70"}">
+      <p class="font-bold" style="color:${accent}">${label}</p>
+      <p class="text-3xl font-black" style="color:${accent}">${count}</p>
+      <p class="text-[11px] text-[#a9836f]">次稱讚</p>
+    </div>`;
+}
+
+/* ---------- 照片 ---------- */
+function handlePhotoFiles(files) {
+  Array.from(files || []).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      state.photos = [...(state.photos || []), { id: Date.now().toString() + Math.random(), src: reader.result, name: file.name }];
+      save("photos:list", state.photos);
+      renderPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+document.getElementById("photoInputTop").addEventListener("change", (e) => handlePhotoFiles(e.target.files));
+
+function removePhoto(id) {
+  state.photos = (state.photos || []).filter(p => p.id !== id);
+  save("photos:list", state.photos);
+  renderPhotos();
+}
+
+function renderPhotos() {
+  const grid = document.getElementById("photoGrid");
+  const empty = document.getElementById("photoEmpty");
+  const photos = state.photos || [];
+  empty.classList.toggle("hidden", photos.length !== 0);
+
+  let html = `
+    <label class="aspect-square rounded-xl border-2 border-dashed border-[#e3c7a8] flex flex-col items-center justify-center gap-1 text-[#c2705a] cursor-pointer hover:bg-[#fdf6ee] transition">
+      <span style="font-size:22px;">➕</span>
+      <span class="text-xs font-bold">新增照片</span>
+      <input type="file" accept="image/*" multiple class="hidden" onchange="handlePhotoFiles(this.files)">
+    </label>`;
+  photos.forEach((p, idx) => {
+    html += `
+      <div class="relative group aspect-square rounded-xl overflow-hidden border border-[#f0e2d2]">
+        <img src="${p.src}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover cursor-pointer" onclick="openLightbox(${idx})">
+        <button onclick="removePhoto('${p.id}')" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition" style="width:20px;height:20px;font-size:11px;">✕</button>
+      </div>`;
+  });
+  grid.innerHTML = html;
+}
+
+function openLightbox(idx) {
+  lightboxIdx = idx;
+  renderLightbox();
+}
+function renderLightbox() {
+  const box = document.getElementById("lightbox");
+  const photos = state.photos || [];
+  if (lightboxIdx === null || !photos[lightboxIdx]) {
+    box.classList.add("hidden");
+    return;
+  }
+  box.classList.remove("hidden");
+  document.getElementById("lbImg").src = photos[lightboxIdx].src;
+}
+document.getElementById("lbPrev").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const photos = state.photos || [];
+  lightboxIdx = (lightboxIdx - 1 + photos.length) % photos.length;
+  renderLightbox();
+});
+document.getElementById("lbNext").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const photos = state.photos || [];
+  lightboxIdx = (lightboxIdx + 1) % photos.length;
+  renderLightbox();
+});
+document.getElementById("lbClose").addEventListener("click", () => { lightboxIdx = null; renderLightbox(); });
+document.getElementById("lightbox").addEventListener("click", () => { lightboxIdx = null; renderLightbox(); });
+document.getElementById("lbImg").addEventListener("click", (e) => e.stopPropagation());
+
+/* ---------- 總渲染 ---------- */
+function renderAll() {
+  renderWish("wishBoy", "男生想要的", "#4a7a9c", DEFAULT_BOY_WISHES, bigPoints(state.smallPoints.boy), "boy");
+  renderWish("wishGirl", "女生想要的", "#c2607a", DEFAULT_GIRL_WISHES, bigPoints(state.smallPoints.girl), "girl");
+  renderStamp("stampGirl", "女生", "男生", "#c2607a", "girl");
+  renderStamp("stampBoy", "男生", "女生", "#4a7a9c", "boy");
+  renderRules();
+  renderPraise("praiseGirl", "女生稱讚男生", "#c2607a", "今天他哪裡表現很棒？", "girl");
+  renderPraise("praiseBoy", "男生稱讚女生", "#4a7a9c", "今天她哪裡表現很棒？", "boy");
+  renderMvp();
+  renderPhotos();
+}
+
+renderAll();
+</script>
+</body>
+</html>
