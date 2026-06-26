@@ -14,12 +14,16 @@
   .fade-in { animation: fadeIn .3s ease; }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 </style>
-<meta property="og:title" content="我們的集點小日子" data-id="th-modified" ><meta name="description" content="index.html" data-id="th-modified" ><meta property="og:description" content="index.html" data-id="th-modified" ><meta property="og:image" content="https://tiiny.host/assets/logo-purple-bg.png" data-id="th-modified" ><meta property="og:image:width" content="1501" data-id="th-modified" ><meta property="og:image:height" content="1501" data-id="th-modified" ><meta property="og:image:type" content="image/png" data-id="th-modified" ><meta property="og:url" content="https://copper-natalya-15.tiiny.site/" data-id="th-modified" ><meta property="og:type" content="website" data-id="th-modified" ><script defer data-domain="copper-natalya-15.tiiny.site" src="https://analytics.tiiny.site/js/plausible.js"></script><script type="text/javascript" src="https://tiiny.host/ad-script.js"></script></head>
+<meta property="og:title" content="我們的集點小日子">
+<meta name="description" content="情侶專屬集點網頁">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
 <body>
 
 <div class="font-body max-w-5xl mx-auto px-4 pb-20">
 
-  <!-- Header -->
   <header class="pt-10 pb-8 text-center">
     <div class="inline-flex items-center gap-2 text-[#c2705a] mb-2">
       ♥ <span class="text-sm font-semibold tracking-wide">COUPLE POINTS</span> ♥
@@ -32,7 +36,6 @@
     <span class="inline-block bg-[#f6c4a8] text-[#7a3b2e] font-bold px-5 py-2 rounded-full shadow-sm" id="redeemedText"></span>
   </div>
 
-  <!-- 1. Wishlist -->
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">🎁</div>
@@ -47,7 +50,6 @@
     </div>
   </section>
 
-  <!-- 2. Points -->
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">📍</div>
@@ -72,7 +74,6 @@
     </div>
   </section>
 
-  <!-- 3. Praise -->
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">✨</div>
@@ -87,7 +88,6 @@
     </div>
   </section>
 
-  <!-- 4. MVP -->
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">🏆</div>
@@ -100,7 +100,6 @@
     <p class="text-center text-sm text-[#a9836f] mt-3" id="mvpResult"></p>
   </section>
 
-  <!-- 5. Photos -->
   <section class="mb-6">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">📷</div>
@@ -122,7 +121,6 @@
   <footer class="text-center text-xs text-[#c2a896] pt-4">made with 💛 for us</footer>
 </div>
 
-<!-- Lightbox -->
 <div id="lightbox" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 hidden">
   <button id="lbPrev" class="absolute left-3 md:left-8 text-white/80 hover:text-white text-3xl">‹</button>
   <img id="lbImg" src="" alt="" class="max-h-[85vh] max-w-[85vw] rounded-xl shadow-2xl">
@@ -131,17 +129,24 @@
 </div>
 
 <script>
-/* ---------- 資料儲存（localStorage） ---------- */
-function load(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch (e) { return fallback; }
-}
-function save(key, value) {
-  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
-}
+/* ========================================================================= */
+/* ⚠️ 步驟二：將以下 firebaseConfig 替換成你自己的 Firebase 專案設定 ⚠️ */
+/* ========================================================================= */
+const firebaseConfig = {
+  apiKey: "請貼上你的API_KEY",
+  authDomain: "你的專案ID.firebaseapp.com",
+  databaseURL: "https://你的專案ID-default-rtdb.firebaseio.com",
+  projectId: "你的專案ID",
+  storageBucket: "你的專案ID.appspot.com",
+  messagingSenderId: "你的SENDER_ID",
+  appId: "你的APP_ID"
+};
 
+// 初始化 Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ---------- 資料結構 ---------- */
 const DEFAULT_RULES = "每完成一件小事 +1 小點（例如：洗碗、說早安、準時赴約）\n每次驚喜或特別用心的事 +3 小點\n10 小點 = 1 大點，大點可用來兌換願望清單裡的禮物\n雙方都可以蓋章加點，誠實互信最重要 💛";
 
 const DEFAULT_BOY_WISHES = [
@@ -156,14 +161,32 @@ const DEFAULT_GIRL_WISHES = [
 ];
 
 let state = {
-  smallPoints: load("points:small", { boy: 0, girl: 0 }),
-  rules: load("points:rules", DEFAULT_RULES),
-  praises: load("praises:list", []),
-  photos: load("photos:list", []),
+  smallPoints: { boy: 0, girl: 0 },
+  rules: DEFAULT_RULES,
+  praises: [],
+  photos: []
 };
 
 let lightboxIdx = null;
 let editingRules = false;
+
+/* ---------- 雲端同步邏輯 ---------- */
+// 監聽 Firebase 資料庫變動 (別人蓋章，你的畫面也會立刻更新)
+db.ref('coupleData').on('value', (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    state.smallPoints = data.smallPoints || { boy: 0, girl: 0 };
+    state.rules = data.rules || DEFAULT_RULES;
+    state.praises = data.praises || [];
+    state.photos = data.photos || [];
+  }
+  renderAll(); // 收到新資料自動重新渲染畫面
+});
+
+// 儲存資料到 Firebase
+function saveState() {
+  db.ref('coupleData').set(state);
+}
 
 /* ---------- 工具 ---------- */
 function bigPoints(small) { return Math.floor((small || 0) / 10); }
@@ -215,9 +238,9 @@ function handleRedeem(who, wishId) {
   const pts = bigPoints(state.smallPoints[who]);
   if (pts < wish.cost) return;
   state.smallPoints[who] = Math.max(0, (state.smallPoints[who] || 0) - wish.cost * 10);
-  save("points:small", state.smallPoints);
+  
+  saveState(); // 同步到雲端
   showRedeemMsg(`🎉 ${who === "boy" ? "男生" : "女生"} 兌換了「${wish.name}」！`);
-  renderAll();
 }
 
 /* ---------- 集點卡 ---------- */
@@ -229,10 +252,11 @@ function renderStamp(containerId, ownerLabel, operatorLabel, color, who) {
   let slotsHtml = "";
   for (let i = 0; i < 10; i++) {
     const isFilled = i < filled;
+    // 將原本的打勾換成印章 (💮)
     slotsHtml += `
       <div class="aspect-square rounded-lg border-2 flex items-center justify-center transition"
-           style="border-color:${color}; background:${isFilled ? color : "rgba(255,255,255,0.6)"}">
-        ${isFilled ? `<span style="color:white;font-size:14px;">✓</span>` : ""}
+           style="border-color:${color}; background:${isFilled ? 'transparent' : "rgba(255,255,255,0.6)"}">
+        ${isFilled ? `<span style="font-size:24px;">💮</span>` : ""}
       </div>`;
   }
   el.innerHTML = `
@@ -250,8 +274,7 @@ function renderStamp(containerId, ownerLabel, operatorLabel, color, who) {
 
 function addSmall(who, delta) {
   state.smallPoints[who] = Math.max(0, (state.smallPoints[who] || 0) + delta);
-  save("points:small", state.smallPoints);
-  renderAll();
+  saveState(); // 同步到雲端
 }
 
 /* ---------- 規則 ---------- */
@@ -274,7 +297,7 @@ function renderRules() {
 document.getElementById("rulesEditBtn").addEventListener("click", () => {
   if (editingRules) {
     state.rules = document.getElementById("rulesEdit").value;
-    save("points:rules", state.rules);
+    saveState(); // 同步到雲端
   }
   editingRules = !editingRules;
   renderRules();
@@ -318,14 +341,12 @@ function addPraise(from) {
   if (!text) return;
   const entry = { id: Date.now().toString(), from, text, date: new Date().toISOString() };
   state.praises = [entry, ...(state.praises || [])];
-  save("praises:list", state.praises);
-  renderAll();
+  saveState(); // 同步到雲端
 }
 
 function deletePraise(id) {
   state.praises = (state.praises || []).filter(p => p.id !== id);
-  save("praises:list", state.praises);
-  renderAll();
+  saveState(); // 同步到雲端
 }
 
 /* ---------- MVP ---------- */
@@ -365,8 +386,7 @@ function handlePhotoFiles(files) {
     const reader = new FileReader();
     reader.onload = () => {
       state.photos = [...(state.photos || []), { id: Date.now().toString() + Math.random(), src: reader.result, name: file.name }];
-      save("photos:list", state.photos);
-      renderPhotos();
+      saveState(); // 同步到雲端
     };
     reader.readAsDataURL(file);
   });
@@ -375,8 +395,7 @@ document.getElementById("photoInputTop").addEventListener("change", (e) => handl
 
 function removePhoto(id) {
   state.photos = (state.photos || []).filter(p => p.id !== id);
-  save("photos:list", state.photos);
-  renderPhotos();
+  saveState(); // 同步到雲端
 }
 
 function renderPhotos() {
