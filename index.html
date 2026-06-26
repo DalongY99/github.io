@@ -13,17 +13,101 @@
   textarea, input { font-family: 'Noto Sans TC', sans-serif; }
   .fade-in { animation: fadeIn .3s ease; }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* --- 新增的兌獎跑馬燈與對話框樣式 --- */
+  .hidden-element { display: none !important; }
+  
+  .redemption-area {
+      text-align: center;
+      margin: 20px auto;
+      max-width: 600px;
+  }
+  
+  .cute-btn {
+      background-color: #ffb3c6;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: background-color 0.3s, transform 0.1s;
+  }
+  
+  .cute-btn:hover { background-color: #ff99b3; }
+  .cute-btn:active { transform: scale(0.95); }
+  
+  #marquee-container {
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+      width: 100%;
+      background-color: #ffe6ea;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #ffccd5;
+      margin: 0 auto;
+  }
+  
+  #marquee-text {
+      display: inline-block;
+      color: #d81b60;
+      font-size: 16px;
+      font-weight: bold;
+      /* 預設隱藏動畫，透過 JS 加上 class 來觸發 */
+  }
+
+  .run-marquee {
+      animation: marquee-slide 8s linear forwards; 
+  }
+  
+  @keyframes marquee-slide {
+      0%   { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+  }
+  
+  #dialogue-box {
+      padding: 15px;
+      border: 2px dashed #ff99b3;
+      border-radius: 15px;
+      background-color: #fff0f3;
+      text-align: left;
+  }
+  
+  .dialogue-title {
+      text-align: center;
+      color: #c2185b;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-weight: bold;
+  }
+  
+  #dialogue-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+  }
+  
+  #dialogue-list li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #880e4f;
+      line-height: 1.5;
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 10px 15px;
+      border-radius: 10px;
+      border-left: 4px solid #ff99b3;
+  }
 </style>
 <meta property="og:title" content="我們的集點小日子">
 <meta name="description" content="情侶專屬集點網頁">
-
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-
 <div class="font-body max-w-5xl mx-auto px-4 pb-20">
-
   <header class="pt-10 pb-8 text-center">
     <div class="inline-flex items-center gap-2 text-[#c2705a] mb-2">
       ♥ <span class="text-sm font-semibold tracking-wide">COUPLE POINTS</span> ♥
@@ -31,11 +115,11 @@
     <h1 class="font-display text-4xl md:text-5xl font-black text-[#7a3b2e]">我們的集點小日子</h1>
     <p class="text-[#a9836f] mt-2 text-sm">蓋一個章，靠近彼此一點</p>
   </header>
-
+  
   <div id="redeemedMsg" class="mb-6 text-center hidden">
     <span class="inline-block bg-[#f6c4a8] text-[#7a3b2e] font-bold px-5 py-2 rounded-full shadow-sm" id="redeemedText"></span>
   </div>
-
+  
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">🎁</div>
@@ -44,12 +128,25 @@
         <p class="text-xs text-[#a9836f]">集滿大點，換一個微笑</p>
       </div>
     </div>
-    <div class="flex flex-col md:flex-row gap-5">
+    <div class="flex flex-col md:flex-row gap-5 mb-5">
       <div id="wishBoy" class="flex-1 min-w-[260px] bg-white/80 rounded-3xl p-5 shadow-sm border border-[#f0d9c8]"></div>
       <div id="wishGirl" class="flex-1 min-w-[260px] bg-white/80 rounded-3xl p-5 shadow-sm border border-[#f0d9c8]"></div>
     </div>
-  </section>
 
+    <div class="redemption-area">
+        <button id="unlock-btn" class="cute-btn">✨ 集章兌獎解鎖 ✨</button>
+        
+        <div id="marquee-container" class="hidden-element">
+            <div id="marquee-text"></div>
+        </div>
+        
+        <div id="dialogue-box" class="hidden-element fade-in">
+            <h4 class="dialogue-title">💖 我們的甜蜜對話 💖</h4>
+            <ul id="dialogue-list"></ul>
+        </div>
+    </div>
+    </section>
+  
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">📍</div>
@@ -73,7 +170,7 @@
       </div>
     </div>
   </section>
-
+  
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">✨</div>
@@ -87,7 +184,7 @@
       <div id="praiseBoy" class="flex-1 min-w-[260px] rounded-3xl p-5 shadow-sm border border-[#f0d9c8]" style="background:#eef4f8"></div>
     </div>
   </section>
-
+  
   <section class="mb-10">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">🏆</div>
@@ -99,7 +196,7 @@
     <div class="bg-gradient-to-br from-[#fff1d6] to-[#ffe2c4] rounded-3xl p-6 shadow-sm border border-[#f0d9c8] flex items-center justify-center gap-8 flex-wrap" id="mvpCards"></div>
     <p class="text-center text-sm text-[#a9836f] mt-3" id="mvpResult"></p>
   </section>
-
+  
   <section class="mb-6">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-[#f6c4a8] text-[#7a3b2e] flex items-center justify-center shrink-0">📷</div>
@@ -117,7 +214,7 @@
       <p id="photoEmpty" class="text-sm text-[#c2a896] text-center py-6">還沒有照片，上傳第一張回憶吧 📷</p>
     </div>
   </section>
-
+  
   <footer class="text-center text-xs text-[#c2a896] pt-4">made with 💛 for us</footer>
 </div>
 
@@ -171,7 +268,6 @@ let lightboxIdx = null;
 let editingRules = false;
 
 /* ---------- 雲端同步邏輯 ---------- */
-// 監聽 Firebase 資料庫變動 (別人蓋章，你的畫面也會立刻更新)
 db.ref('coupleData').on('value', (snapshot) => {
   const data = snapshot.val();
   if (data) {
@@ -180,10 +276,9 @@ db.ref('coupleData').on('value', (snapshot) => {
     state.praises = data.praises || [];
     state.photos = data.photos || [];
   }
-  renderAll(); // 收到新資料自動重新渲染畫面
+  renderAll(); 
 });
 
-// 儲存資料到 Firebase
 function saveState() {
   db.ref('coupleData').set(state);
 }
@@ -238,8 +333,7 @@ function handleRedeem(who, wishId) {
   const pts = bigPoints(state.smallPoints[who]);
   if (pts < wish.cost) return;
   state.smallPoints[who] = Math.max(0, (state.smallPoints[who] || 0) - wish.cost * 10);
-  
-  saveState(); // 同步到雲端
+  saveState();
   showRedeemMsg(`🎉 ${who === "boy" ? "男生" : "女生"} 兌換了「${wish.name}」！`);
 }
 
@@ -252,7 +346,6 @@ function renderStamp(containerId, ownerLabel, operatorLabel, color, who) {
   let slotsHtml = "";
   for (let i = 0; i < 10; i++) {
     const isFilled = i < filled;
-    // 將原本的打勾換成印章 (💮)
     slotsHtml += `
       <div class="aspect-square rounded-lg border-2 flex items-center justify-center transition"
            style="border-color:${color}; background:${isFilled ? 'transparent' : "rgba(255,255,255,0.6)"}">
@@ -274,7 +367,7 @@ function renderStamp(containerId, ownerLabel, operatorLabel, color, who) {
 
 function addSmall(who, delta) {
   state.smallPoints[who] = Math.max(0, (state.smallPoints[who] || 0) + delta);
-  saveState(); // 同步到雲端
+  saveState();
 }
 
 /* ---------- 規則 ---------- */
@@ -297,7 +390,7 @@ function renderRules() {
 document.getElementById("rulesEditBtn").addEventListener("click", () => {
   if (editingRules) {
     state.rules = document.getElementById("rulesEdit").value;
-    saveState(); // 同步到雲端
+    saveState();
   }
   editingRules = !editingRules;
   renderRules();
@@ -341,12 +434,12 @@ function addPraise(from) {
   if (!text) return;
   const entry = { id: Date.now().toString(), from, text, date: new Date().toISOString() };
   state.praises = [entry, ...(state.praises || [])];
-  saveState(); // 同步到雲端
+  saveState();
 }
 
 function deletePraise(id) {
   state.praises = (state.praises || []).filter(p => p.id !== id);
-  saveState(); // 同步到雲端
+  saveState();
 }
 
 /* ---------- MVP ---------- */
@@ -386,7 +479,7 @@ function handlePhotoFiles(files) {
     const reader = new FileReader();
     reader.onload = () => {
       state.photos = [...(state.photos || []), { id: Date.now().toString() + Math.random(), src: reader.result, name: file.name }];
-      saveState(); // 同步到雲端
+      saveState();
     };
     reader.readAsDataURL(file);
   });
@@ -395,7 +488,7 @@ document.getElementById("photoInputTop").addEventListener("change", (e) => handl
 
 function removePhoto(id) {
   state.photos = (state.photos || []).filter(p => p.id !== id);
-  saveState(); // 同步到雲端
+  saveState();
 }
 
 function renderPhotos() {
@@ -464,6 +557,50 @@ function renderAll() {
 }
 
 renderAll();
+
+/* ========================================================================= */
+/* --- 新增的兌獎跑馬燈與對話框邏輯 --- */
+/* ========================================================================= */
+document.addEventListener("DOMContentLoaded", function() {
+    const unlockBtn = document.getElementById('unlock-btn');
+    const marqueeContainer = document.getElementById('marquee-container');
+    const marqueeText = document.getElementById('marquee-text');
+    const dialogueBox = document.getElementById('dialogue-box');
+    const dialogueList = document.getElementById('dialogue-list');
+
+    const dialogues = [
+        "寶貝：「小寶今天真的好棒，辛苦了！」",
+        "小寶：「寶貝才辛苦呢，最愛寶貝了！」",
+        "寶貝：「小寶超級貼心，給你一個大抱抱！」",
+        "小寶：「遇見寶貝是我每天最開心的事情！」"
+    ];
+
+    unlockBtn.addEventListener('click', function() {
+        marqueeText.innerText = dialogues.join(" 💕 ");
+
+        unlockBtn.classList.add('hidden-element');
+        marqueeContainer.classList.remove('hidden-element');
+        dialogueBox.classList.add('hidden-element');
+        
+        dialogueList.innerHTML = '';
+
+        // 觸發 CSS 動畫
+        marqueeText.classList.remove('run-marquee');
+        void marqueeText.offsetWidth; // 觸發 reflow
+        marqueeText.classList.add('run-marquee');
+
+        marqueeText.addEventListener('animationend', function() {
+            marqueeContainer.classList.add('hidden-element');
+            dialogueBox.classList.remove('hidden-element');
+
+            dialogues.forEach(text => {
+                const li = document.createElement('li');
+                li.innerText = text;
+                dialogueList.appendChild(li);
+            });
+        }, { once: true });
+    });
+});
 </script>
 </body>
 </html>
